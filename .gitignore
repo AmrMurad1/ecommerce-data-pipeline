@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+env/
+*.egg-info/
+
+# Airflow
+logs/
+*.db
+
+# Docker
+*.env
+docker-compose.override.yml
+
+# Data
+data/
