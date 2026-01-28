@@ -6,12 +6,14 @@ from sqlalchemy import create_engine, text
 import os
 import sys
 
-# Step 2: Define the database connection string
-DB_USER = "airflow_user"
-DB_PASSWORD = "amoory2003"
-DB_HOST = "postgres"          # Docker service name (internal network)
-DB_PORT = "5432"
-DB_NAME = "ecommerce"
+DB_USER = os.getenv("DB_USER", "airflow_user")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST", "postgres")
+DB_PORT = os.getenv("DB_PORT", "5432")
+DB_NAME = os.getenv("DB_NAME", "ecommerce")
+
+if not DB_PASSWORD:
+    raise ValueError("DB_PASSWORD environment variable is required!")
 
 connection_string = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
