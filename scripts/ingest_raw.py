@@ -1,6 +1,3 @@
-"""
-Step 1: Import all necessary libraries
-"""
 import pandas as pd
 from sqlalchemy import create_engine, text
 import os
@@ -17,14 +14,14 @@ if not DB_PASSWORD:
 
 connection_string = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-# Step 3: Define the file path (inside the container)
+# Define the file path 
 excel_file = "/opt/airflow/data/Online Retail.xlsx"
 
 print("=" * 80)
 print("Starting data ingestion script...")
 print("=" * 80)
 
-# Step 4: Check if file exists
+# Check if file exists
 print(f"\n[1/5] Checking file path: {excel_file}")
 if not os.path.exists(excel_file):
     print(f"✗ ERROR: File not found at {excel_file}")
@@ -33,7 +30,7 @@ if not os.path.exists(excel_file):
 
 print("✓ File found!")
 
-# Step 5: Read the Excel file
+#Read the Excel file
 print(f"\n[2/5] Reading Excel file...")
 try:
     df = pd.read_excel(excel_file)
@@ -44,7 +41,7 @@ except Exception as e:
     print("  → Make sure openpyxl is installed in the container")
     sys.exit(1)
 
-# Step 6: Connect to PostgreSQL
+# Connect to PostgreSQL
 print(f"\n[3/5] Connecting to PostgreSQL...")
 try:
     engine = create_engine(connection_string)
@@ -56,7 +53,7 @@ except Exception as e:
     print(f"   Connection string used: {connection_string}")
     sys.exit(1)
 
-# Step 7: Load data into raw_sales table
+# Load data into raw_sales table
 print(f"\n[4/5] Writing data to 'raw_sales' table...")
 try:
     # Redirect stderr to suppress library debug output
