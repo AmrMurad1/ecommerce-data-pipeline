@@ -13,10 +13,10 @@ default_args = {
 
 # Define the DAG
 with DAG(
-    dag_id='ingest_dag',
-    description='Simple DAG that runs the raw data ingestion script',
+    dag_id='ingest_only_dag',
+    description='Simple DAG to run the raw data ingestion script',
     default_args=default_args,
-    schedule=None,  # Manual trigger only
+    schedule=None,
     catchup=False,
     tags=['ingest', 'bronze'],
 ) as dag:
