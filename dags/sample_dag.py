@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-# New imports for Airflow 3.x
 from airflow import DAG
 from airflow.providers.standard.operators.bash import BashOperator
 from airflow.providers.standard.operators.python import PythonOperator
@@ -24,7 +23,7 @@ with DAG(
     dag_id='sample_ecommerce_dag',
     default_args=default_args,
     description='Sample DAG for ecommerce pipeline',
-    schedule='@daily',  # ← هنا التغيير المهم: schedule بدل schedule_interval
+    schedule='@daily', 
     catchup=False,
     tags=['ecommerce', 'sample'],
 ) as dag:
@@ -39,5 +38,4 @@ with DAG(
         bash_command='date',
     )
 
-    # Task dependency
     task_hello >> task_date

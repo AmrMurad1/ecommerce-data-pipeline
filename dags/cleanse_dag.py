@@ -9,23 +9,17 @@ default_args = {
     'start_date': datetime(2025, 1, 1),
 }
 
+
 with DAG(
-    dag_id='ingest_only_dag',
-    description='DAG to ingest raw data and cleanse to silver layer',
+    dag_id='cleanse_dag',
+    description='DAG to run the cleansing script',
     default_args=default_args,
     schedule=None,
     catchup=False,
-    tags=['ingest', 'bronze', 'silver'],
+    tags=['cleanse', 'silver'],
 ) as dag:
-    
-    ingest_task = BashOperator(
-        task_id='run_ingestion_script',
-        bash_command='python /opt/airflow/scripts/ingest_raw.py',
-    )
     
     cleanse_task = BashOperator(
         task_id='run_cleansing_script',
         bash_command='python /opt/airflow/scripts/cleansing.py',
     )
-    
-    ingest_task >> cleanse_task
