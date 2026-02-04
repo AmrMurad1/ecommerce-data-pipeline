@@ -1,32 +1,42 @@
+
 import logging
 import pandas as pd
 from sqlalchemy import create_engine
 import os
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 
 
 def cleanse_to_silver():
-    """
-    Read from raw_sales, clean the data, and write to silver_cleaned_sales.
-    """
+   
     logger.info("=" * 80)
     logger.info("Starting Silver Layer Cleansing...")
     logger.info("=" * 80)
 
-    DB_USER = os.getenv("DB_USER", "airflow_user")
+    # Get database credentials from environment
+    DB_USER = os.getenv("DB_USER")
     DB_PASSWORD = os.getenv("DB_PASSWORD")
-    DB_HOST = os.getenv("DB_HOST", "postgres")
-    DB_PORT = os.getenv("DB_PORT", "5432")
-    DB_NAME = os.getenv("DB_NAME", "ecommerce")
+    DB_HOST = os.getenv("DB_HOST")
+    DB_PORT = os.getenv("DB_PORT")
+    DB_NAME = os.getenv("DB_NAME")
 
-    if not DB_PASSWORD:
-        logger.error("ERROR: DB_PASSWORD environment variable is missing!")
-        raise ValueError("DB_PASSWORD environment variable is required")
+    # Validate required environment variables
+    if not all([DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME]):
+        logger.error("✗ ERROR: Missing required environment variables")
+        logger.error(f"   DB_USER: {DB_USER}")
+        logger.error(f"   DB_PASSWORD: {'***' if DB_PASSWORD else 'MISSING'}")
+        logger.error(f"   DB_HOST: {DB_HOST}")
+        logger.error(f"   DB_PORT: {DB_PORT}")
+        logger.error(f"   DB_NAME: {DB_NAME}")
+        raise ValueError("Required environment variables are missing. Check your .env file.")
 
     connection_string = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-    logger.info("[1/5] Connecting to PostgreSQL...")
+    logger.info(f"[1/5] Connecting to PostgreSQL at {DB_HOST}:{DB_PORT}/{DB_NAME}")
     try:
         engine = create_engine(connection_string)
         with engine.connect() as conn:
@@ -65,6 +75,7 @@ def cleanse_to_silver():
     logger.info("   Added TotalAmount column")
 
     # Remove duplicates
+    original_count = len(df)
     df = df.drop_duplicates()
     logger.info(f"   Removed {original_count - len(df):,} duplicate rows")
 
@@ -91,7 +102,14 @@ def cleanse_to_silver():
         raise
 
     logger.info("\n" + "=" * 80)
-    logger.info("SILVER LAYER CLEANSING COMPLETED SUCCESSFULLY!")
+    logger.info("✓ SILVER LAYER CLEANSING COMPLETED SUCCESSFULLY!")
     logger.info("=" * 80)
-    logger.info("SILVER LAYER CLEANSING COMPLETED SUCCESSFULLY!")
-    logger.info("=" * 80)
+
+
+if __name__ == "__main__":
+    import sys
+    try:
+        cleanse_to_silver()
+    except Exception as e:
+        logger.error(f"Pipeline failed: {e}")
+        sys.exit(1)
