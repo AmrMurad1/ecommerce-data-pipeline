@@ -3,24 +3,14 @@ ETL pipeline that processes 540K+ e-commerce transactions into a star schema for
 
 <img width="2923" height="937" alt="image" src="https://github.com/user-attachments/assets/87a9b215-e98d-4dfb-842e-fb9e4fbe0c1c" />
 
-Architecture
-Medallion Layers
-Bronze Layer (Raw)
+Key Features
 
-Source: Online Retail.xlsx
-Table: raw_sales
-Rows: 541,909
+✅ Automated ETL with Airflow
 
-Silver Layer (Cleaned)
+✅ Data quality checks
 
-Removed nulls, negatives, duplicates
-Added TotalAmount column
-Table: silver_cleaned_sales
-Rows: 392,692
+✅ Star schema design
 
-Gold Layer (Star Schema)
+✅ Docker containerization
 
-dim_date - 1,096 rows
-dim_product - 3,665 rows
-dim_customer - 4,338 rows
-fact_sales - 392,692 rows
+✅ Production-ready structure
